@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Énigme 3 – Le Nuage Surchargé</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1020;
+      --primary: #4fc3f7;
+      --primary-soft: rgba(79, 195, 247, 0.2);
+      --accent: #ffca28;
+      --danger: #ff5252;
+      --text: #e9edf7;
+      --muted: #9aa4c0;
+      --card-bg: #12172a;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.6);
+      --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.45);
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.25s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1b2845 0, #050816 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1080px;
+      background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(0, 0, 0, 0.7)
+        ),
+        radial-gradient(circle at top left, rgba(79, 195, 247, 0.16), transparent 60%);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 24px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cloud-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background:
+        radial-gradient(circle at 15% 8%, rgba(255, 255, 255, 0.4) 0, transparent 50%),
+        radial-gradient(circle at 85% 12%, rgba(79, 195, 247, 0.5) 0, transparent 55%),
+        radial-gradient(circle at 5% 80%, rgba(79, 195, 247, 0.35) 0, transparent 60%);
+      mix-blend-mode: screen;
+      z-index: 0;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px
+        );
+      background-size: 40px 40px;
+      opacity: 0.55;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 10%, #ffffff, #4fc3f7 40%, #1565c0 100%);
+      box-shadow: 0 0 20px rgba(79, 195, 247, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #050816;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .header-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app-name {
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .main-title {
+      font-size: 22px;
+      font-weight: 650;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cloud-pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(79, 195, 247, 0.55);
+      background: rgba(11, 16, 32, 0.85);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cloud-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px rgba(79, 195, 247, 0.9);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .storage-chip {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(9, 15, 34, 0.9);
+      border: 1px solid rgba(255, 202, 40, 0.6);
+      color: var(--accent);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .storage-bar {
+      width: 82px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .storage-bar-fill {
+      width: 92%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff5252, #ffca28);
+      box-shadow: 0 0 12px rgba(255, 82, 82, 0.9);
+    }
+
+    .user-chip {
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(3, 7, 22, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4fc3f7, #1e88e5);
+    }
+
+    .layout-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+      gap: 22px;
+    }
+
+    @media (max-width: 860px) {
+      .layout-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: rgba(8, 13, 35, 0.9);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: var(--shadow-card);
+      padding: 14px 16px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(79, 195, 247, 0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(31, 41, 99, 0.9);
+      color: var(--primary);
+      border: 1px solid rgba(79, 195, 247, 0.4);
+    }
+
+    .panel-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .hint-tag {
+      font-size: 11px;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(67, 56, 14, 0.9);
+      border: 1px solid rgba(255, 202, 40, 0.5);
+    }
+
+    .hint-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .instructions-list {
+      list-style: none;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 8px 0 10px;
+    }
+
+    .instructions-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .instructions-bullet {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      margin-top: 7px;
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .sync-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sync-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(79, 195, 247, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: var(--primary);
+    }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff5252;
+      box-shadow: 0 0 10px rgba(255, 82, 82, 0.9);
+    }
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 600px) {
+      .file-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .file-card {
+      position: relative;
+      background: radial-gradient(circle at top left, rgba(79, 195, 247, 0.12), transparent 60%),
+        linear-gradient(145deg, rgba(11, 16, 36, 0.96), rgba(8, 13, 30, 0.96));
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      padding: 8px 9px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .file-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.65);
+      border-color: rgba(79, 195, 247, 0.55);
+    }
+
+    .file-card.selected {
+      border-color: rgba(79, 195, 247, 0.9);
+      background: radial-gradient(circle at top left, rgba(79, 195, 247, 0.28), transparent 60%),
+        linear-gradient(145deg, rgba(10, 22, 56, 0.98), rgba(8, 20, 52, 0.98));
+      box-shadow: 0 0 0 1px rgba(79, 195, 247, 0.5),
+        0 14px 32px rgba(0, 0, 0, 0.75);
+    }
+
+    .file-card.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .file-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .file-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .file-icon {
+      width: 30px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
+
+    .file-icon::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      right: 4px;
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #4fc3f7, #1e88e5);
+      box-shadow: 0 0 10px rgba(79, 195, 247, 0.9);
+    }
+
+    .file-icon-type {
+      position: relative;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      opacity: 0.85;
+    }
+
+    .file-name {
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      color: #dbeafe;
+    }
+
+    .file-size {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .file-pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #cbd5f5;
+      background: rgba(15, 23, 42, 0.9);
+      white-space: nowrap;
+    }
+
+    .file-pill-large {
+      border-color: rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.8);
+    }
+
+    .file-pill-keep {
+      border-color: rgba(74, 222, 128, 0.8);
+      color: #bbf7d0;
+      background: rgba(22, 101, 52, 0.8);
+    }
+
+    .file-row-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .file-detail {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .file-code-letter {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-pill);
+      padding: 2px 7px;
+      border: 1px solid rgba(79, 195, 247, 0.7);
+    }
+
+    .code-panel {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 4fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 720px) {
+      .code-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .code-bubbles {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .code-bubble-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .code-bubble {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--primary);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.9), #020617);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .code-bubble.empty {
+      color: rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.6), #020617);
+      border-style: dashed;
+    }
+
+    .code-badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .code-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      padding: 7px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      transition:
+        background var(--transition-med),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        color var(--transition-med);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4fc3f7, #1e88e5);
+      color: #020617;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.9),
+        0 0 16px rgba(79, 195, 247, 0.8);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 1),
+        0 0 18px rgba(79, 195, 247, 1);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.9),
+        0 0 10px rgba(79, 195, 247, 0.9);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--muted);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding-inline: 10px;
+      font-size: 12px;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 26px;
+    }
+
+    .feedback-message {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+    }
+
+    .feedback-message.ok {
+      border-color: rgba(74, 222, 128, 0.7);
+      color: #bbf7d0;
+      background: rgba(22, 101, 52, 0.85);
+    }
+
+    .feedback-message.error {
+      border-color: rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.88);
+    }
+
+    .feedback-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+    }
+
+    .feedback-hint {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    @keyframes pulse-border {
+      0% { box-shadow: 0 0 0 0 rgba(79, 195, 247, 0.6); }
+      100% { box-shadow: 0 0 0 12px rgba(79, 195, 247, 0); }
+    }
+
+    .pulse-once {
+      animation: pulse-border 1s ease-out 0.2s 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="cloud-layer"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="content">
+      <header class="header">
+        <div class="header-left">
+          <div class="logo-circle">☁</div>
+          <div class="header-title-block">
+            <div class="app-name">Console Cloud – Salle serveur virtuelle</div>
+            <div class="main-title">
+              Énigme&nbsp;3&nbsp;: Le nuage surchargé
+              <span class="cloud-pill">
+                <span class="cloud-pill-dot"></span>
+                Mode nettoyage intelligent
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="storage-chip">
+            <span>Stockage utilisé&nbsp;: 92&nbsp;%</span>
+            <div class="storage-bar">
+              <div class="storage-bar-fill"></div>
+            </div>
+          </div>
+          <div class="user-chip">
+            <div class="user-avatar"></div>
+            <span>Session&nbsp;: Analyste éco-numérique</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout-main">
+        <section class="panel">
+          <div class="panel-inner">
+            <div class="panel-title-row">
+              <div class="panel-title">
+                🎯 Objectif pédagogique
+                <span class="panel-title-badge">Impact du stockage cloud</span>
+              </div>
+              <span class="hint-tag">
+                <span class="hint-dot"></span>
+                Chaque clic = synchronisation évitée
+              </span>
+            </div>
+
+            <p class="panel-sub">
+              Le cloud de ton organisation est presque saturé. Tu dois libérer de l’espace en repérant
+              les fichiers <strong>les moins utiles à conserver</strong> dans le cloud.
+            </p>
+
+            <ul class="instructions-list">
+              <li><span class="instructions-bullet"></span><strong>Étape 1&nbsp;:</strong> Parcours les 8 fichiers et clique sur ceux qui te semblent les plus inutiles.</li>
+              <li><span class="instructions-bullet"></span><strong>Étape 2&nbsp;:</strong> Tu dois sélectionner exactement <strong>4 fichiers</strong>.</li>
+              <li><span class="instructions-bullet"></span><strong>Étape 3&nbsp;:</strong> Le mot-code est formé par la <strong>première lettre</strong> de chaque fichier choisi.</li>
+            </ul>
+
+            <div class="sync-status">
+              <div class="sync-left">
+                <div class="sync-icon">⟳</div>
+                <span>Synchronisation automatique&nbsp;: <span style="color:#ff5252;font-weight:600">désactivée</span></span>
+              </div>
+              <div class="sync-right">
+                <span class="sync-dot"></span>
+                <span>Supprimer le superflu, garder les traces utiles.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel pulse-once">
+          <div class="panel-inner">
+            <div class="panel-title-row">
+              <div class="panel-title">☁ Dossier «&nbsp;Cloud – Session de tri&nbsp;»</div>
+              <span class="panel-title-badge">Sélectionne 4 fichiers</span>
+            </div>
+
+            <div class="file-grid" id="fileGrid">
+              <button class="file-card" data-id="capture" data-letter="C">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">IMG</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Capture d’écran 2021</div>
+                      <div class="file-size">4,7&nbsp;Mo</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-large">Peu utile</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Ancienne capture peu réutilisée.</div>
+                  <div class="file-code-letter">C</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="video" data-letter="V">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">VID</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Vidéo 4K de 3 minutes</div>
+                      <div class="file-size">1,8&nbsp;Go</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-large">Très lourd</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">À garder si elle sert à ton activité.</div>
+                  <div class="file-code-letter">V</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="photo_floue" data-letter="P">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">IMG</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Photo floue</div>
+                      <div class="file-size">2,1&nbsp;Mo</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-large">Inexploitable</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Ne documente rien clairement.</div>
+                  <div class="file-code-letter">P</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="facture" data-letter="F">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">PDF</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Facture PDF 2024</div>
+                      <div class="file-size">380&nbsp;Ko</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-keep">Trace utile</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Conservation réglementaire recommandée.</div>
+                  <div class="file-code-letter">F</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="doublon" data-letter="D">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">IMG</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Doublon – vacances</div>
+                      <div class="file-size">5,3&nbsp;Mo</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-large">Doublon</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Copie inutile d’une photo existante.</div>
+                  <div class="file-code-letter">D</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="doc_pro" data-letter="W">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">DOC</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Document pro en cours</div>
+                      <div class="file-size">920&nbsp;Ko</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-keep">Actif</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Souvent consulté ou modifié.</div>
+                  <div class="file-code-letter">W</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="photo_tableau" data-letter="T">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">IMG</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Photo de tableau blanc</div>
+                      <div class="file-size">1,6&nbsp;Mo</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-keep">Mémo utile</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Contient des notes de réunion.</div>
+                  <div class="file-code-letter">T</div>
+                </div>
+              </button>
+
+              <button class="file-card" data-id="archive_2018" data-letter="A">
+                <div class="file-row-top">
+                  <div class="file-meta-left">
+                    <div class="file-icon"><span class="file-icon-type">ZIP</span></div>
+                    <div class="file-title-block">
+                      <div class="file-name">Archive ZIP 2018</div>
+                      <div class="file-size">650&nbsp;Mo</div>
+                    </div>
+                  </div>
+                  <span class="file-pill file-pill-large">Ancien</span>
+                </div>
+                <div class="file-row-bottom">
+                  <div class="file-detail">Plus utilisé depuis des années.</div>
+                  <div class="file-code-letter">A</div>
+                </div>
+              </button>
+            </div>
+
+            <div class="code-panel">
+              <div class="code-bubbles" id="codeBubbles">
+                <span class="code-bubble-label">Mot-code&nbsp;:</span>
+                <div class="code-bubble empty" data-index="0">?</div>
+                <div class="code-bubble empty" data-index="1">?</div>
+                <div class="code-bubble empty" data-index="2">?</div>
+                <div class="code-bubble empty" data-index="3">?</div>
+              </div>
+              <div class="code-actions">
+                <button class="btn btn-ghost" type="button" id="btnReset">↺ Réinitialiser</button>
+                <button class="btn btn-primary" type="button" id="btnValidate">✓ Valider</button>
+              </div>
+            </div>
+
+            <div class="feedback">
+              <div class="feedback-message" id="feedbackMessage">
+                <div class="feedback-icon">i</div>
+                <span>Sélectionne 4 fichiers inutiles.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const MAX_SELECTION = 4;
+      const expectedCode = "CPDA"; 
+
+      const fileCards = Array.from(document.querySelectorAll(".file-card"));
+      const codeBubbles = Array.from(document.querySelectorAll(".code-bubble"));
+      const feedbackMessage = document.getElementById("feedbackMessage");
+      const btnValidate = document.getElementById("btnValidate");
+      const btnReset = document.getElementById("btnReset");
+
+      let selected = []; 
+
+      function updateCodeBubbles() {
+        codeBubbles.forEach((bubble, index) => {
+          const item = selected[index];
+          bubble.textContent = item ? item.letter : "?";
+          bubble.classList.toggle("empty", !item);
+        });
+      }
+
+      function updateCardsState() {
+        fileCards.forEach((card) => {
+          const id = card.getAttribute("data-id");
+          const isSelected = selected.some((f) => f.id === id);
+          card.classList.toggle("selected", isSelected);
+          if (!isSelected && selected.length >= MAX_SELECTION) {
+            card.classList.add("disabled");
+          } else {
+            card.classList.remove("disabled");
+          }
+        });
+      }
+
+      function setFeedback(type, message) {
+        feedbackMessage.className = "feedback-message " + (type === "ok" ? "ok" : type === "error" ? "error" : "");
+        feedbackMessage.innerHTML = `<div class="feedback-icon">${type === "ok" ? "✓" : type === "error" ? "!" : "i"}</div><span>${message}</span>`;
+      }
+
+      function handleCardClick(card) {
+        const id = card.getAttribute("data-id");
+        const letter = card.getAttribute("data-letter");
+
+        if (selected.some((item) => item.id === id)) {
+          selected = selected.filter((item) => item.id !== id);
+        } else {
+          if (selected.length < MAX_SELECTION) {
+            selected.push({ id, letter });
+          }
+        }
+        updateCodeBubbles();
+        updateCardsState();
+      }
+
+      function validateCode() {
+        if (selected.length !== MAX_SELECTION) {
+          setFeedback("error", "Sélectionne 4 fichiers.");
+          return;
+        }
+        const code = selected.map((s) => s.letter).join("");
+        if (code === expectedCode) {
+          setFeedback("ok", `Mot-code trouvé : « ${code} ». Bravo !`);
+        } else {
+          setFeedback("error", `Mot-code obtenu : « ${code} ». Ce n’est pas le bon.`);
+        }
+      }
+
+      fileCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          if (!card.classList.contains("disabled") || card.classList.contains("selected")) {
+            handleCardClick(card);
+          }
+        });
+      });
+
+      btnValidate.addEventListener("click", validateCode);
+      btnReset.addEventListener("click", () => {
+        selected = [];
+        updateCodeBubbles();
+        updateCardsState();
+        setFeedback("neutral", "Sélectionne 4 fichiers inutiles.");
+      });
+    })();
+  </script>
+</body>
+</html>
